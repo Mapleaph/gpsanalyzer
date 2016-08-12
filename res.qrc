@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>green.png</file>
+        <file>red.png</file>
+        <file>satellite.ico</file>
+    </qresource>
+</RCC>
