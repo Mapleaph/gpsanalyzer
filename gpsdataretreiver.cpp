@@ -225,7 +225,7 @@ void GPSDataRetreiver::doOpen(QString portName, qint32 baudrate)
 
     } else {
 
-        //emit sigOpenFailed();
+        emit sigOpenFailed();
 
     }
 
@@ -243,6 +243,8 @@ void GPSDataRetreiver::doClose()
 
     if (port) {
 
+        // add this line to stop the infinite loop
+        retreiveFlag = false;
         emit sigExitThread();
 
     }
