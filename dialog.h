@@ -32,16 +32,15 @@ public:
     Dialog();
 
 signals:
-    void opened();
     void sigOpen(QString portName, qint32 baudrate);
     void sigClose();
 
 private slots:
     void on_openClsBtn_clicked();
-    void changeToOpen();
+    void changeToOpenUI(); // right after a successful open
     void openFailedNotify();
-    void exitThread();
-    void updateUI(QStringList resultList);
+    void exitThread(); // execute after closing the port
+    void displayData(QStringList resultList);
 
 private:
 

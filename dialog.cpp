@@ -20,14 +20,17 @@ Dialog::Dialog()
     mainLayout->addWidget(satelliteBox, 1, 0, 1, 1);
     mainLayout->addWidget(gpsDataBox, 0, 1, 2, 1);
 
-    QRect screenRec = QApplication::desktop()->screenGeometry();
 
+    // centering the dialog by default
+    QRect screenRec = QApplication::desktop()->screenGeometry();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenRec));
+
 
     setLayout(mainLayout);
 
     setWindowTitle(tr("GPS Data Analyzer"));
 
+    // set fixed size
     layout()->setSizeConstraint(QLayout::SetFixedSize);
     setSizeGripEnabled(false);
 
@@ -136,11 +139,11 @@ void Dialog::on_openClsBtn_clicked()
         gpsdr->moveToThread(gpsdr_thread);
 
         connect(this, SIGNAL(sigOpen(QString, qint32)), gpsdr, SLOT(doOpen(QString, qint32)));
-        connect(gpsdr, SIGNAL(sigOpened()), this, SLOT(changeToOpen()));
+        connect(gpsdr, SIGNAL(sigOpened()), this, SLOT(changeToOpenUI()));
         connect(gpsdr, SIGNAL(sigOpenFailed()), this, SLOT(openFailedNotify()));
         connect(this, SIGNAL(sigClose()), gpsdr, SLOT(doClose()));
         connect(gpsdr, SIGNAL(sigExitThread()), this, SLOT(exitThread()));
-        connect(gpsdr, SIGNAL(sigHaveResult(QStringList)), this, SLOT(updateUI(QStringList)));
+        connect(gpsdr, SIGNAL(sigHaveResult(QStringList)), this, SLOT(displayData(QStringList)));
 
         gpsdr_thread->start();
 
@@ -168,7 +171,7 @@ void Dialog::openFailedNotify()
 
 }
 
-void Dialog::changeToOpen()
+void Dialog::changeToOpenUI()
 {
     openFlag = true;
 
@@ -201,6 +204,18 @@ void Dialog::createSatelliteBox()
 
     QGridLayout *layout = new QGridLayout;
 
+    /*
+     * gridlayout description for satellite detection
+     * 12 satellite section divided into 2 columns
+     *
+     * 1 7
+     * 2 8
+     * 3 9
+     * 4 10
+     * 5 11
+     * 6 12
+     *
+     */
     for (i=0; i<SATELLITE_NUM; i+=SATELLITE_NUM/2) {
 
         layout->addWidget(satellite_lb[i], i % 6, i/2);
@@ -225,7 +240,7 @@ void Dialog::createSatelliteBox()
 
 }
 
-void Dialog::updateUI(QStringList resultList)
+void Dialog::displayData(QStringList resultList)
 {
     qDebug() << "into updateUI";
 
@@ -241,6 +256,9 @@ void Dialog::updateUI(QStringList resultList)
 
         for (int i=0; i<SATELLITE_NUM; i++) {
 
+            /* green light where there is a detected satellite,
+             * otherwise the red light
+             */
             if (resultList.at(i+1) != "NULL") {
 
                 satellite_lb[i]->setPixmap(green);

@@ -12,7 +12,6 @@ void GPSDataRetreiver::retreive()
 {
     qDebug() << "retreive";
 
-
     QRegExp rx("[^$].*");
 
     QStringList resultList;
