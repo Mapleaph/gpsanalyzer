@@ -206,6 +206,10 @@ void GPSDataRetreiver::doOpen(QString portName, qint32 baudrate)
 {
     qDebug() << "into doOpen";
 
+#ifdef Q_OS_WIN
+    portName = "\\\\.\\" + portName;
+#endif
+
     qDebug() << portName;
 
     port = new QSerialPort(portName);
