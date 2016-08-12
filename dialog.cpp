@@ -164,6 +164,7 @@ void Dialog::openFailedNotify()
 {
     QMessageBox::about(NULL, tr("Warning"), tr("Open Com Port Failed!"));
     openFlag = false;
+    exitThread();
 
 }
 
